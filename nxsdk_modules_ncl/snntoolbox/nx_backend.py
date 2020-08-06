@@ -426,8 +426,12 @@ class SNN(AbstractSNN):
             warnings.warn("Layer type 'MaxPooling' not supported yet. " +
                           "Falling back on 'AveragePooling'.", RuntimeWarning)
 
-    def compile(self):
-        """Compile the spiking network."""
+    def compile(self, board=None):
+        """Compile the spiking network.
+        
+        Args:
+            board: (Graph) Instance of a board to compile the model with.
+        """
 
         if self.saturation:
             clampedReLU = ClampedReLU(threshold=0, max_value=self.saturation)
@@ -460,7 +464,7 @@ class SNN(AbstractSNN):
 
             self.composed_snn = ComposableModel('dnn')
             self.compose_with_input_generator()
-            self.composed_snn.compile()
+            self.composed_snn.compile(board)
 
             numChips = len(self.snn.board.n2Chips)
             numCores = [len(self.snn.board.n2Chips[i].n2Cores)
